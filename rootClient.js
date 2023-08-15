@@ -126,8 +126,9 @@ let targetIP = ""
 let dlfileFLG = "cmd"
 let filesize = 0
 let byteList = []
+let jsonFlg = true
 const main = ()=>{
-    const client = net.connect(3000, "localhost", () => {
+    const client = net.connect(3000,"localhost", () => {
         console.log('connected to server');
         const sendData = JSON.stringify({type:"sendUserType",token:rootToken})
         client.write(sendData)
@@ -184,12 +185,13 @@ const main = ()=>{
                 getCommand(targetIP,client)//////////////////////////////////////////dfの時のエラーが出ない
             }
         }else if(dlfileFLG == "dlfile"){
-            let jsonFlg = true
-            try{
-                JSON.parse(data)
-            }catch{
-                jsonFlg = false
-            }
+            // jsonFlg = true
+            // try{
+            //     JSON.parse(data)
+            //     console.log()
+            // }catch{
+            //     jsonFlg = false
+            // }
             if(!jsonFlg){
                 byteList.push(data)
                 let nowFile = Buffer.concat(byteList)
@@ -203,9 +205,11 @@ const main = ()=>{
                     dlstream.end((err)=>{
                         if(!err){
                             console.log("☑ download done")
+                            jsonFlg = true
                             getCommand(targetIP,client)
                         }else{
                             console.log("download error")
+                            jsonFlg = true
                             getCommand(targetIP,client)
                         }
                     })
@@ -213,8 +217,11 @@ const main = ()=>{
             
             // dlfileFLG = "cmd"
             }else{
-                let data1 = JSON.parse(data.toString("utf-8")).data
-                filesize = data1
+                if(JSON.parse(data.toString("utf-8")).type == "dfFileSize"){
+                    let data1 = JSON.parse(data.toString("utf-8")).data
+                    filesize = data1
+                    jsonFlg = false
+                }
             }
         }
     })

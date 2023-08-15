@@ -119,7 +119,7 @@ server.on("connection",(socket)=>{
                     let sendData = JSON.stringify({type:"uploadError"})
                     rootUserSocket.write(sendData)
                 }else if(JSON.parse(data).type == "fileData"){
-                    rootUserSocket = null
+                    // rootUserSocket = null
                     rootUserSocket = socket
                     const data1 = JSON.parse(data).data
                     dlfileData.gpath = data1.gpath
